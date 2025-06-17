@@ -1,0 +1,41 @@
+Model the Produto entity
+
+Create application/core/domain/Produto.java
+
+Define fields: Long id, String nome, String descricao, BigDecimal preco, String imagem, String categoria.
+
+Model the Cliente entity
+
+Create application/core/domain/Cliente.java
+
+Define fields: Long id, String nome, String email, String telefone, String cpf, String senha.
+
+Model Pedido and ItemPedido
+
+Pedido: Long id, Cliente cliente, LocalDateTime data, BigDecimal total, List<ItemPedido> itens.
+
+ItemPedido: Long id, Produto produto, Integer quantidade, BigDecimal subtotal.
+
+Define repository ports
+
+application/core/port/out/ProdutoRepositoryPort.java with CRUD methods for Produto.
+
+ClienteRepositoryPort.java and PedidoRepositoryPort.java similarly.
+
+Define supplier API port
+
+application/core/port/out/FornecedorProdutoPort.java with methods like List<Produto> importarCatalogo() and Produto buscarPorSku(String sku).
+
+Sketch use-case interfaces
+
+application/core/port/in/ProdutoUseCase.java (save, list, find, delete).
+
+PedidoUseCase.java (criarPedido, listarPorCliente, cancelarPedido).
+
+Copy static assets & templates
+
+From your Embalando project, move resources/static/ and resources/templates/ into Embalink-Server.
+
+Review and commit
+
+Commit each set of changes in separate Git commits (e.g., “Add domain model: Produto”, “Add domain model: Cliente”, etc.).
