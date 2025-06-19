@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
- * Entidade de domínio que representa um Produto do catálogo.
- * (Não contém nenhuma anotação JPA; mapeamento ficará no adapter/outbound.)
+ * Entidade de domínio que representa um Produto do catálogo. (Não contém nenhuma anotação JPA; mapeamento ficará no
+ * adapter/outbound.)
  */
 public class Produto {
 
@@ -18,14 +18,10 @@ public class Produto {
 
     /* -------------------- Construtores -------------------- */
 
-    public Produto() { }
+    public Produto() {
+    }
 
-    public Produto(Long id,
-                   String nome,
-                   String descricao,
-                   BigDecimal preco,
-                   String imagem,
-                   String categoria) {
+    public Produto(Long id, String nome, String descricao, BigDecimal preco, String imagem, String categoria) {
 
         this.id = id;
         this.nome = nome;
@@ -37,19 +33,53 @@ public class Produto {
 
     /* -------------------- Getters & Setters -------------------- */
 
-    public Long getId()             { return id; }
-    public String getNome()         { return nome; }
-    public String getDescricao()    { return descricao; }
-    public BigDecimal getPreco()    { return preco; }
-    public String getImagem()       { return imagem; }
-    public String getCategoria()    { return categoria; }
+    public Long getId() {
+        return id;
+    }
 
-    public void setId(Long id)                       { this.id = id; }
-    public void setNome(String nome)                 { this.nome = nome; }
-    public void setDescricao(String descricao)       { this.descricao = descricao; }
-    public void setPreco(BigDecimal preco)           { this.preco = preco; }
-    public void setImagem(String imagem)             { this.imagem = imagem; }
-    public void setCategoria(String categoria)       { this.categoria = categoria; }
+    public String getNome() {
+        return nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public BigDecimal getPreco() {
+        return preco;
+    }
+
+    public String getImagem() {
+        return imagem;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public void setPreco(BigDecimal preco) {
+        this.preco = preco;
+    }
+
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
 
     /* -------------------- Regras de domínio simples -------------------- */
 
@@ -65,8 +95,10 @@ public class Produto {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Produto)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Produto))
+            return false;
         Produto produto = (Produto) o;
         return Objects.equals(id, produto.id);
     }

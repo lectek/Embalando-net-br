@@ -12,12 +12,12 @@ public class Cliente {
     private String email;
     private String telefone;
     private String cpf;
-    private String senha;  // hash/BCrypt — não armazene texto puro em produção
+    private String senha; // hash/BCrypt — não armazene texto puro em produção
 
-    public Cliente() { }
+    public Cliente() {
+    }
 
-    public Cliente(Long id, String nome, String email,
-                   String telefone, String cpf, String senha) {
+    public Cliente(Long id, String nome, String email, String telefone, String cpf, String senha) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -28,19 +28,53 @@ public class Cliente {
 
     /* Getters & Setters */
 
-    public Long getId()              { return id; }
-    public String getNome()          { return nome; }
-    public String getEmail()         { return email; }
-    public String getTelefone()      { return telefone; }
-    public String getCpf()           { return cpf; }
-    public String getSenha()         { return senha; }
+    public Long getId() {
+        return id;
+    }
 
-    public void setId(Long id)               { this.id = id; }
-    public void setNome(String nome)         { this.nome = nome; }
-    public void setEmail(String email)       { this.email = email; }
-    public void setTelefone(String telefone) { this.telefone = telefone; }
-    public void setCpf(String cpf)           { this.cpf = cpf; }
-    public void setSenha(String senha)       { this.senha = senha; }
+    public String getNome() {
+        return nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
 
     /* Regra de domínio simples */
     public void atualizarTelefone(String novoTelefone) {
@@ -53,8 +87,10 @@ public class Cliente {
     /* equals & hashCode por id */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Cliente)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Cliente))
+            return false;
         Cliente c = (Cliente) o;
         return Objects.equals(id, c.id);
     }

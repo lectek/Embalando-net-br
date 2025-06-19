@@ -1,0 +1,50 @@
+# docker-compose.yml
+version: "3.9"
+
+services:
+  # renomeei para "mysql" pra ficar mais simples e bater com o depends_on
+  mysql:
+    image: mysql:8.4
+    container_name: mysql_embalando
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: embalando
+      MYSQL_USER: embalando
+      MYSQL_PASSWORD: embalando_pwd
+      MYSQL_ROOT_PASSWORD: root_pwd
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    networks:
+      - back
+
+  app:
+    build: .
+    container_name: embalando_app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_USERNAME: embalando
+      DB_PASSWORD: embalando_pwd
+      JWT_SECRET: "Troque_Esta_Chave"
+      # aponte para o serviço mysql pela rede "back"
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/embalando?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    ports:
+      - "8080:8080"
+    networks:
+      - back
+
+volumes:
+  db_data:
+
+networks:
+  back:

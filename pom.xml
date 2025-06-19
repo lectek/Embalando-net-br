@@ -1,41 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- EMBALANDO-NET-BR • Java 21 / Spring Boot 3 -->
+<!-- EMBALANDO-NET-BR • Java 17 • Spring Boot 3.3.0 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
                              https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <!-- ==== Artefato ==== -->
   <groupId>br.com.embalando</groupId>
   <artifactId>embalando-net-br</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>EMBALANDO-NET-BR</name>
-  <description>Plataforma de dropshipping em Arquitetura Hexagonal (Java 21 + Spring Boot 3)</description>
+  <description>Plataforma de dropshipping em Arquitetura Hexagonal (Java 17 + Spring Boot 3)</description>
   <packaging>jar</packaging>
 
-  <properties>
-    <java.version>21</java.version>
-    <spring-boot.version>3.3.0</spring-boot.version>
-    <mapstruct.version>1.5.5.Final</mapstruct.version>
-    <testcontainers.version>1.19.7</testcontainers.version>
-  </properties>
-
- <parent>
+  <!-- ==== Parent Spring Boot ==== -->
+  <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>${spring-boot.version}</version>
-    <relativePath/> <!-- lookup parent from repository -->
- </parent>
+    <version>3.3.0</version>
+    <relativePath/>
+  </parent>
 
+  <!-- ==== Propriedades ==== -->
+  <properties>
+    <java.version>17</java.version>
+    <mapstruct.version>1.5.5.Final</mapstruct.version>
+    <testcontainers.version>1.19.7</testcontainers.version>
+    <lombok.version>1.18.32</lombok.version>
+
+    <jacoco.version>0.8.10</jacoco.version>
+    <jib.version>3.3.1</jib.version>
+    <formatter.version>2.23.0</formatter.version>
+    <reproducible.build.plugin.version>1.6.0</reproducible.build.plugin.version>
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.release>${java.version}</maven.compiler.release>
+    <reproducible.build.outputTimestamp>2025-01-01T00:00:00Z</reproducible.build.outputTimestamp>
+  </properties>
+
+  <!-- ==== Dependências ==== -->
   <dependencies>
-
-    <!-- === Core === -->
+    <!-- Web & API -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
 
-    <!-- === Persistência === -->
+    <!-- JPA + MySQL -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -46,29 +59,37 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!-- === Utilidades === -->
+    <!-- Validação -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
+
+    <!-- Lombok & MapStruct -->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <optional>true</optional>
+      <version>${lombok.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct</artifactId>
       <version>${mapstruct.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+    </dependency>
 
-    <!-- === Observabilidade === -->
+    <!-- Observabilidade -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
 
-    <!-- === Testes === -->
+    <!-- Testes -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
@@ -92,20 +113,19 @@
       <version>${testcontainers.version}</version>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
+  <!-- ==== Plugins de build ==== -->
   <build>
     <plugins>
 
-      <!-- Compilador Java 21 + annotation processors -->
+      <!-- 1) Compilador Java 17 + processadores -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.11.0</version>
         <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
+          <release>${maven.compiler.release}</release>
           <annotationProcessorPaths>
             <path>
               <groupId>org.projectlombok</groupId>
@@ -117,18 +137,83 @@
               <artifactId>mapstruct-processor</artifactId>
               <version>${mapstruct.version}</version>
             </path>
+            <path>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-configuration-processor</artifactId>
+              <version>3.3.0</version>
+            </path>
           </annotationProcessorPaths>
         </configuration>
       </plugin>
 
-      <!-- Plugin Spring Boot -->
+      <!-- 2) Spring Boot repackage + mainClass definido -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${spring-boot.version}</version>
+        <configuration>
+          <layers enabled="true"/>
+          <mainClass>br.com.embalando.EmbalandoNetBrApplication</mainClass>
+        </configuration>
+      </plugin>
+
+      <!-- 3) JaCoCo para cobertura -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.version}</version>
+        <executions>
+          <execution><goals><goal>prepare-agent</goal></goals></execution>
+          <execution><id>report</id><phase>test</phase><goals><goal>report</goal></goals></execution>
+        </executions>
+      </plugin>
+
+      <!-- 4) Formatter de código -->
+      <plugin>
+        <groupId>net.revelc.code.formatter</groupId>
+        <artifactId>formatter-maven-plugin</artifactId>
+        <version>${formatter.version}</version>
+        <executions>
+          <execution><goals><goal>format</goal></goals></execution>
+        </executions>
+      </plugin>
+
+      <!-- 5) Builds reproduzíveis -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>reproducible-build-maven-plugin</artifactId>
+        <version>${reproducible.build.plugin.version}</version>
+        <configuration>
+          <sourceDateEpoch>${reproducible.build.outputTimestamp}</sourceDateEpoch>
+        </configuration>
+      </plugin>
+
+      <!-- 6) Jib para imagem Docker (opcional) -->
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
+        <version>${jib.version}</version>
+        <configuration>
+          <from><image>eclipse-temurin:17-jre</image></from>
+          <to><image>br.com.embalando/embalando-net-br:${project.version}</image></to>
+        </configuration>
       </plugin>
 
     </plugins>
   </build>
 
+  <!-- ==== Perfis Spring ==== -->
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <properties><spring.profiles.active>dev</spring.profiles.active></properties>
+    </profile>
+    <profile>
+      <id>test</id>
+      <properties><spring.profiles.active>test</spring.profiles.active></properties>
+    </profile>
+    <profile>
+      <id>prod</id>
+      <properties><spring.profiles.active>prod</spring.profiles.active></properties>
+    </profile>
+  </profiles>
 </project>

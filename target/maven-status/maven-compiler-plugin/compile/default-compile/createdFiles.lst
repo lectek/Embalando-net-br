@@ -1,0 +1,10 @@
+br\com\embalando\application\core\domain\Produto.class
+br\com\embalando\application\core\domain\Cliente.class
+br\com\embalando\EmbalandoNetBrApplication.class
+br\com\embalando\application\core\service\PedidoService.class
+br\com\embalando\adapter\inbound\Controller\PedidoController.class
+br\com\embalando\application\core\domain\StatusPedido.class
+br\com\embalando\application\core\domain\Pedido.class
+br\com\embalando\application\core\domain\ItemPedido.class
+br\com\embalando\application\core\domain\TipoPagamento.class
+br\com\embalando\adapter\outbound\repository\PedidoRepository.class
