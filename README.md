@@ -40,7 +40,7 @@ src/main/java/br/com/embalando
  │           ├── in/          ← Use-case interfaces
  │           └── out/         ← Repositórios / APIs externas
  └── adapter
-     ├── inbound/web/         ← Controllers REST
+    ├── inbound/rest/        ← Controllers REST
      └── outbound/
          ├── persistence/     ← JPA entities & repos
          └── fornecedor/      ← Cliente REST do dropshipper

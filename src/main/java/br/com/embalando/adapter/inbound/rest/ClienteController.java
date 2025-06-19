@@ -1,4 +1,4 @@
-package br.com.embalando.adapter.inbound.web;
+package br.com.embalando.adapter.inbound.rest;
 
 import br.com.embalando.application.core.domain.Cliente;
 import br.com.embalando.application.core.port.in.RegistrarClienteUseCase;
