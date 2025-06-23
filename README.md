@@ -1,20 +1,6 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/lectek/EMBALANDO-NET-BR/main/.github/banner.png" width="640" alt="Logo EMBALANDO-NET-BR">
-</p>
+# 🐾 EMBALANDO – Loja Pet & Dropshipping API
 
-<h1 align="center">EMBALANDO-NET-BR</h1>
-<p align="center">
-  <b>Java 21 • Spring Boot 3 • Arquitetura Hexagonal</b><br>
-  Plataforma de dropshipping leve, testável e pronta para escalar.
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/java-21-blue?logo=java">
-  <img src="https://img.shields.io/badge/spring_boot-3.3-green?logo=spring">
-  <img src="https://img.shields.io/github/actions/workflow/status/lectek/EMBALANDO-NET-BR/ci.yml?branch=main&label=CI">
-  <img src="https://img.shields.io/badge/status-pre--alpha-orange">
-  <img src="https://img.shields.io/badge/license-MIT-lightgrey">
-</p>
+Plataforma Java 21 com Spring Boot 3.3.0 usando arquitetura hexagonal, voltada para automação e gestão de vendas.
 
 ---
 
@@ -25,6 +11,58 @@
 * **Dropshipping ready:** porta dedicada para integrar catálogo de fornecedor e sincronizar estoque.  
 * **CI/CD GitHub Actions:** build, teste, análise e imagem Docker em cada PR.  
 * **Observabilidade embutida:** Actuator + OpenTelemetry (traços e métricas Prometheus).
+
+---
+
+## 🚀 Como iniciar (modo DEV)
+
+1. **Requisitos:**
+   - Docker + Docker Compose
+   - Java 21
+   - Maven 3.9.6 ou superior
+
+2. **Execute:**
+
+```bash
+docker-compose up --build
+```
+
+A aplicação subirá em:  
+📦 `http://localhost:8080`  
+🔍 Actuator/Health: `http://localhost:8081/actuator/health`
+
+---
+
+## 🧪 Executar TESTES
+
+Por padrão, o perfil `test` usa banco em memória (H2) com `create-drop`.
+
+```bash
+./mvnw test -Dspring.profiles.active=test
+```
+
+Ou edite `application-test.properties` para usar MySQL local em vez de H2.
+
+---
+
+## 🏠 Modo Produção (exemplo)
+
+Configure variáveis de ambiente:
+
+```env
+SPRING_PROFILES_ACTIVE=prod
+DB_USERNAME=embalando
+DB_PASSWORD=embalando_pwd
+JWT_SECRET=segredo_supersecreto
+SMTP_USER=mail@exemplo.com
+SMTP_PASS=senha_do_email
+```
+
+Então execute com Docker ou JAR:
+
+```bash
+java -jar target/embalando-net-br-0.0.1-SNAPSHOT.jar
+```
 
 ---
 
@@ -40,10 +78,33 @@ src/main/java/br/com/embalando
  │           ├── in/          ← Use-case interfaces
  │           └── out/         ← Repositórios / APIs externas
  └── adapter
-     ├── inbound/web/         ← Controllers REST
+     ├── inbound/rest/        ← Controllers REST
      └── outbound/
          ├── persistence/     ← JPA entities & repos
          └── fornecedor/      ← Cliente REST do dropshipper
 resources/
  ├── static/                  ← CSS / JS
  └── templates/               ← Páginas server-side (Thymeleaf)
+```
+
+---
+
+## 📆 Perfis disponíveis
+
+| Perfil | Descrição                            | Porta | Banco     |
+|--------|--------------------------------------|-------|-----------|
+| dev    | Desenvolvimento local (default)      | 8080  | MySQL 8   |
+| test   | Testes com JUnit ou Testcontainers   | 8081  | H2 / MySQL|
+| prod   | Produção real com segurança e cache  | 8080  | MySQL / RDS|
+
+---
+
+## 🛠 Tecnologias usadas
+
+- Java 21
+- Spring Boot 3.3
+- MySQL 8 / H2
+- Spring Data JPA
+- Docker & Docker Compose
+- MapStruct & Lombok
+- Actuator & Prometheus

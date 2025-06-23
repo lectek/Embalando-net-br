@@ -1,13 +1,21 @@
 package br.com.embalando.application.core.domain;
 
 import java.util.Objects;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 
 /**
  * Entidade que representa um cliente cadastrado na loja.
  */
+@Entity
 public class Cliente {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nome;
     private String email;
     private String telefone;
@@ -27,7 +35,6 @@ public class Cliente {
     }
 
     /* Getters & Setters */
-
     public Long getId() {
         return id;
     }
@@ -84,7 +91,6 @@ public class Cliente {
         this.telefone = novoTelefone;
     }
 
-    /* equals & hashCode por id */
     @Override
     public boolean equals(Object o) {
         if (this == o)

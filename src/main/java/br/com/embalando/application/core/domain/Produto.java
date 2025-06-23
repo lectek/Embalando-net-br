@@ -1,28 +1,29 @@
 package br.com.embalando.application.core.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-/**
- * Entidade de domínio que representa um Produto do catálogo. (Não contém nenhuma anotação JPA; mapeamento ficará no
- * adapter/outbound.)
- */
+@Entity
 public class Produto {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nome;
     private String descricao;
     private BigDecimal preco;
     private String imagem;
     private String categoria;
 
-    /* -------------------- Construtores -------------------- */
-
     public Produto() {
     }
 
     public Produto(Long id, String nome, String descricao, BigDecimal preco, String imagem, String categoria) {
-
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
@@ -30,8 +31,6 @@ public class Produto {
         this.imagem = imagem;
         this.categoria = categoria;
     }
-
-    /* -------------------- Getters & Setters -------------------- */
 
     public Long getId() {
         return id;
@@ -81,8 +80,6 @@ public class Produto {
         this.categoria = categoria;
     }
 
-    /* -------------------- Regras de domínio simples -------------------- */
-
     public void aplicarDesconto(BigDecimal percentual) {
         if (percentual == null || percentual.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Percentual de desconto inválido.");
@@ -90,8 +87,6 @@ public class Produto {
         BigDecimal fator = BigDecimal.ONE.subtract(percentual);
         this.preco = this.preco.multiply(fator);
     }
-
-    /* -------------------- equals & hashCode por id -------------------- */
 
     @Override
     public boolean equals(Object o) {

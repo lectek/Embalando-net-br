@@ -1,92 +1,94 @@
 package br.com.embalando.application.core.domain;
 
+import br.com.embalando.adapter.outbound.persistence.entity.ItemPedidoEntity;
+import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
+@Entity
 public class Pedido {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
     private Cliente cliente;
+
     private LocalDateTime data;
     private BigDecimal total;
-    private List<ItemPedido> itens;
+
+    @OneToMany
+    private List<ItemPedidoEntity> itens;
+
+    @Enumerated(EnumType.STRING)
     private StatusPedido status;
+
+    @Enumerated(EnumType.STRING)
     private TipoPagamento tipoPagamento;
 
-    public Pedido() {
-    }
-
-    public Pedido(Long id, Cliente cliente, LocalDateTime data, List<ItemPedido> itens, TipoPagamento tipoPagamento) {
-
-        this.id = id;
-        this.cliente = cliente;
-        this.data = data != null ? data : LocalDateTime.now();
-        this.itens = itens;
-        this.tipoPagamento = tipoPagamento;
-        this.status = StatusPedido.AGUARDANDO_PAGAMENTO;
-        this.total = calcularTotal(itens);
-    }
-
-    private BigDecimal calcularTotal(List<ItemPedido> itens) {
-        return itens.stream().map(ItemPedido::getSubtotal).reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    /* Regras de domínio */
-    public void marcarPago() {
-        if (status != StatusPedido.AGUARDANDO_PAGAMENTO)
-            throw new IllegalStateException("Pedido não está aguardando pagamento.");
-        status = StatusPedido.PAGO;
-    }
-
-    public void cancelar() {
-        if (status == StatusPedido.ENVIADO || status == StatusPedido.ENTREGUE)
-            throw new IllegalStateException("Pedido já enviado não pode ser cancelado.");
-        status = StatusPedido.CANCELADO;
-    }
-
-    /* Getters */
+    // Getters e Setters
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Cliente getCliente() {
         return cliente;
     }
 
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
     public LocalDateTime getData() {
         return data;
+    }
+
+    public void setData(LocalDateTime data) {
+        this.data = data;
     }
 
     public BigDecimal getTotal() {
         return total;
     }
 
-    public List<ItemPedido> getItens() {
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public List<ItemPedidoEntity> getItens() {
         return itens;
+    }
+
+    public void setItens(List<ItemPedidoEntity> itens) {
+        this.itens = itens;
     }
 
     public StatusPedido getStatus() {
         return status;
     }
 
+    public void setStatus(StatusPedido status) {
+        this.status = status;
+    }
+
     public TipoPagamento getTipoPagamento() {
         return tipoPagamento;
     }
 
-    /* equals/hashCode por id */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof Pedido))
-            return false;
-        return Objects.equals(id, ((Pedido) o).id);
+    public void setTipoPagamento(TipoPagamento tipoPagamento) {
+        this.tipoPagamento = tipoPagamento;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public String toString() {
+        return "Pedido{" + "id=" + id + ", cliente=" + cliente + ", data=" + data + ", total=" + total + ", itens="
+                + itens + ", status=" + status + ", tipoPagamento=" + tipoPagamento + '}';
     }
 }

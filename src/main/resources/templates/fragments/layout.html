@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${title} ?: 'Embalando • Loja de Produtos Pet'">Embalando</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/index.css}" />
+  <style>
+    :root {
+      --primaria: #2a9d8f;
+      --secundaria: #264653;
+      --neutra: #f4f4f4;
+      --texto: #333333;
+      --espaco: 8px;
+      --transicao: 250ms;
+    }
+  </style>
+</head>
+<body>
+
+  <header th:replace="fragments/header :: header"></header>
+
+  <main th:fragment="conteudo">
+    <!-- conteúdo dinâmico -->
+  </main>
+
+  <footer th:replace="fragments/footer :: footer"></footer>
+
+  <!-- 👉 Aqui entra seu script layout.js -->
+  <script th:src="@{/js/layout.js}"></script>
+
+</body>
+</html>

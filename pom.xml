@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- EMBALANDO-NET-BR • Java 17 • Spring Boot 3.3.0 -->
+<!-- EMBALANDO-NET-BR • Java 21 • Spring Boot 3.3.0 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
@@ -11,7 +11,7 @@
   <artifactId>embalando-net-br</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>EMBALANDO-NET-BR</name>
-  <description>Plataforma de dropshipping em Arquitetura Hexagonal (Java 17 + Spring Boot 3)</description>
+  <description>Plataforma de dropshipping em Arquitetura Hexagonal (Java 21 + Spring Boot 3.3.0)</description>
   <packaging>jar</packaging>
 
   <!-- ==== Parent Spring Boot ==== -->
@@ -24,7 +24,7 @@
 
   <!-- ==== Propriedades ==== -->
   <properties>
-    <java.version>17</java.version>
+    <java.version>21</java.version>
     <mapstruct.version>1.5.5.Final</mapstruct.version>
     <testcontainers.version>1.19.7</testcontainers.version>
     <lombok.version>1.18.32</lombok.version>
@@ -36,6 +36,8 @@
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
     <maven.compiler.release>${java.version}</maven.compiler.release>
     <reproducible.build.outputTimestamp>2025-01-01T00:00:00Z</reproducible.build.outputTimestamp>
   </properties>
@@ -46,6 +48,11 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+      <version>2.1.0</version>
     </dependency>
 
     <!-- JPA + MySQL -->
@@ -77,16 +84,21 @@
       <artifactId>mapstruct</artifactId>
       <version>${mapstruct.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-configuration-processor</artifactId>
-      <optional>true</optional>
-    </dependency>
 
     <!-- Observabilidade -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
+    <!-- Segurança e Cache -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-cache</artifactId>
     </dependency>
 
     <!-- Testes -->
@@ -115,11 +127,41 @@
     </dependency>
   </dependencies>
 
-  <!-- ==== Plugins de build ==== -->
+  <!-- ==== Build & Plugins ==== -->
   <build>
-    <plugins>
+    <pluginManagement>
+      <plugins>
+        <!-- SpotBugs -->
+        <plugin>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>4.7.3.0</version>
+          <configuration>
+            <effort>Max</effort>
+            <threshold>Low</threshold>
+          </configuration>
+          <executions>
+            <execution>
+              <goals><goal>check</goal></goals>
+            </execution>
+          </executions>
+        </plugin>
 
-      <!-- 1) Compilador Java 17 + processadores -->
+        <!-- Checkstyle -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>3.2.2</version>
+          <configuration>
+            <configLocation>google_checks.xml</configLocation>
+            <failOnViolation>true</failOnViolation>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <!-- 1) Compilador Java -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -146,7 +188,7 @@
         </configuration>
       </plugin>
 
-      <!-- 2) Spring Boot repackage + mainClass definido -->
+      <!-- 2) Spring Boot -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
@@ -156,7 +198,7 @@
         </configuration>
       </plugin>
 
-      <!-- 3) JaCoCo para cobertura -->
+      <!-- 3) JaCoCo -->
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -167,7 +209,7 @@
         </executions>
       </plugin>
 
-      <!-- 4) Formatter de código -->
+      <!-- 4) Formatter -->
       <plugin>
         <groupId>net.revelc.code.formatter</groupId>
         <artifactId>formatter-maven-plugin</artifactId>
@@ -177,27 +219,28 @@
         </executions>
       </plugin>
 
-      <!-- 5) Builds reproduzíveis -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>reproducible-build-maven-plugin</artifactId>
-        <version>${reproducible.build.plugin.version}</version>
-        <configuration>
-          <sourceDateEpoch>${reproducible.build.outputTimestamp}</sourceDateEpoch>
-        </configuration>
-      </plugin>
-
-      <!-- 6) Jib para imagem Docker (opcional) -->
+      <!-- 5) Jib -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
         <version>${jib.version}</version>
         <configuration>
-          <from><image>eclipse-temurin:17-jre</image></from>
-          <to><image>br.com.embalando/embalando-net-br:${project.version}</image></to>
+          <from>
+            <image>eclipse-temurin:21-jre-jammy</image>
+          </from>
+          <to>
+            <image>br.com.embalando/embalando-net-br:${project.version}</image>
+          </to>
+          <container>
+            <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+            <ports><port>8080</port></ports>
+            <jvmFlags>
+              <jvmFlag>-Xms512m</jvmFlag>
+              <jvmFlag>-Xmx1024m</jvmFlag>
+            </jvmFlags>
+          </container>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
 
